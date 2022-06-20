@@ -17,15 +17,15 @@ export default class App extends Component {
 
   componentDidMount() {
     Animated.timing(this.animatedValue, {
-      toValue: 150,
-      duration: 1500,
+      toValue: 1,
+      duration: 1200,
     }).start();
   }
 
   render() {
-    const interpolatedColor = this.animatedValue.interpolate({
-      inputRange: [0, 150],
-      outputRange: ["rgb(0,0,0)", "rgb(51, 250, 170)"],
+    const interpolatedRotate = this.animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["0deg", "360deg"],
     });
     return (
       <View style={styles.container}>
@@ -33,22 +33,22 @@ export default class App extends Component {
           style={[
             styles.box,
             {
-              backgroundColor: interpolatedColor,
               transform: [
                 {
-                  translateY: this.animatedValue,
+                  rotate: interpolatedRotate,
                 },
               ],
             },
           ]}
         >
           <Pressable
-            onPress={() =>
+            onPress={() => {
               Animated.timing(this.animatedValue, {
                 toValue: 0,
-                duration: 1000,
-              }).start()
-            }
+                duration: 1200,
+              }).start();
+              setTimeout(() => this.animatedValue.setValue(1), 1200);
+            }}
           >
             <Text style={{ color: "white" }}>Drag Me</Text>
           </Pressable>
