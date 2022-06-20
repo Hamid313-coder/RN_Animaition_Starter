@@ -1,48 +1,53 @@
 import { Component } from "react";
-import {
-  Animated,
-  StyleSheet,
-  Text,
-  View,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Animated, PanResponder, StyleSheet, Text, View } from "react-native";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
-    this.handlePressIn = this.handlePressIn.bind(this);
-    this.handlePressOut = this.handlePressOut.bind(this);
-    this.animatedValue = new Animated.Value(1);
-  }
-
-  handlePressIn() {
-    Animated.spring(this.animatedValue, {
-      toValue: 0.5,
-    }).start();
-  }
-
-  handlePressOut() {
-    Animated.spring(this.animatedValue, {
-      toValue: 1,
-      friction: 4,
-      // tension: 40,
-    }).start();
+    this.animatedValue = new Animated.ValueXY();
+    this._value = { x: 0, y: 0 };
+    this.animatedValue.addListener((value) => (this._value = value));
+    this.PanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onPanResponderGrant: (e, gestureState) => {
+        this.animatedValue.setOffset({
+          x: this._value.x,
+          y: this._value.y,
+        });
+        this.animatedValue.setValue({
+          x: 0,
+          y: 0,
+        });
+      },
+      onPanResponderMove: Animated.event([
+        null,
+        { dx: this.animatedValue.x, dy: this.animatedValue.y },
+      ]),
+      onPanResponderRelease: (e, gestureState) => {
+        this.animatedValue.flattenOffset();
+        Animated.decay(this.animatedValue, {
+          useNativeDriver: true,
+          deceleration: 0.997,
+          velocity: { x: gestureState.vx, y: gestureState.vy },
+        }).start();
+      },
+    });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <TouchableWithoutFeedback
-          onPressIn={this.handlePressIn}
-          onPressOut={this.handlePressOut}
+        <Animated.View
+          style={[
+            styles.box,
+            { transform: this.animatedValue.getTranslateTransform() },
+          ]}
+          {...this.PanResponder.panHandlers}
         >
-          <Animated.View
-            style={[styles.box, { transform: [{ scale: this.animatedValue }] }]}
-          >
-            <Text style={{ color: "white" }}>Press Me</Text>
-          </Animated.View>
-        </TouchableWithoutFeedback>
+          <Text style={{ color: "white" }}>Drag Me</Text>
+        </Animated.View>
       </View>
     );
   }
@@ -56,8 +61,8 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: "dodgerblue",
-    width: 200,
-    height: 100,
+    width: 150,
+    height: 90,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
