@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import FlipAnimation from "./animations/FlipAnimation";
 import ParallelAnimation from "./animations/ParallelAnimation";
 import Rotation from "./animations/Rotation";
 import SequenceAnimations from "./animations/SequenceAnimations";
@@ -11,7 +12,8 @@ function App(props) {
       {/* <Rotation /> */}
       {/* <SequenceAnimations /> */}
       {/* <StaggeredAnimation /> */}
-      <ParallelAnimation />
+      {/* <ParallelAnimation /> */}
+      <FlipAnimation />
     </View>
   );
 }
