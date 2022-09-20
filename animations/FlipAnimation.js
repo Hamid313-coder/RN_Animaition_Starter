@@ -1,4 +1,6 @@
+import { AntDesign } from "@expo/vector-icons";
 import React, { useRef } from "react";
+import reactDom from "react-dom";
 import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
 
 function FlipAnimation(props) {
@@ -57,6 +59,7 @@ function FlipAnimation(props) {
       <Pressable onPress={() => flip()}>
         <Text>FLIP</Text>
       </Pressable>
+      <AntDesign name="arrowsalt" size={24} color="black" />
     </View>
   );
 }
@@ -66,6 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#222",
   },
   text: {
     color: "white",
